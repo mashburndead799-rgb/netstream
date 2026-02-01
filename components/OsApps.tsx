@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Save, RefreshCw, Globe, ShieldAlert, Cpu, Palette, Type, Trash2, Wifi, Battery, HardDrive, User, Lock, Monitor, Volume2, Command, Search, Radio, Bluetooth, Mic, Bell, Info, Layers, Download, Power, Database, Terminal as TerminalIcon, Camera, Music, Image, Map, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Crosshair, Box, Grid, AlertTriangle, Eye, Hexagon, Play, Pause, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Move, Maximize, Circle, ChevronDown, Upload } from 'lucide-react';
+import { Save, RefreshCw, Globe, ShieldAlert, Cpu, Palette, Type, Trash2, Wifi, Battery, HardDrive, User, Lock, Monitor, Volume2, Command, Search, Radio, Bluetooth, Mic, Bell, Info, Layers, Download, Power, Database, Terminal as TerminalIcon, Camera, Music, Image, Map, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Crosshair, Box, Grid, AlertTriangle, Eye, Hexagon, Play, Pause, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Move, Maximize, Circle, ChevronDown, Upload, Archive, Scissors, Key, BarChart, PenTool, Feather, Disc, FileText, ChevronLeft, ChevronRight, Star, MoreVertical, Plus, File } from 'lucide-react';
 
 // --- SHARED UTILS ---
 const AppContainer = ({ children, className = "" }: any) => (
@@ -956,72 +956,108 @@ export const SysGraphApp = () => {
     );
 };
 
-// --- BROWSER APP ---
+// --- BROWSER APP (CHROME REPLICA) ---
 export const BrowserApp = () => {
-    const [url, setUrl] = useState("https://hybrid-os.web");
-    const [isLoading, setIsLoading] = useState(false);
+    const [tabs, setTabs] = useState([{ id: 1, title: 'Nouvel onglet', url: 'https://google.com', active: true }]);
+    const [inputValue, setInputValue] = useState('https://google.com');
+    const [iframeUrl, setIframeUrl] = useState('https://www.google.com/webhp?igu=1'); // Google capable d'être iframe
 
-    const handleRefresh = () => {
-        setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 800);
+    const activeTab = tabs.find(t => t.active) || tabs[0];
+
+    const addTab = () => {
+        const newId = Math.max(...tabs.map(t => t.id)) + 1;
+        setTabs(prev => prev.map(t => ({ ...t, active: false })).concat({ id: newId, title: 'Nouvel onglet', url: '', active: true }));
+        setInputValue('');
+    };
+
+    const closeTab = (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        if (tabs.length === 1) return;
+        const newTabs = tabs.filter(t => t.id !== id);
+        if (id === activeTab.id) {
+            newTabs[newTabs.length - 1].active = true;
+            setInputValue(newTabs[newTabs.length - 1].url);
+        }
+        setTabs(newTabs);
+    };
+
+    const switchTab = (id: number) => {
+        setTabs(prev => prev.map(t => ({ ...t, active: t.id === id })));
+        const tab = tabs.find(t => t.id === id);
+        if(tab) {
+            setInputValue(tab.url);
+            setIframeUrl(tab.url.startsWith('http') ? tab.url : `https://www.google.com/search?q=${tab.url}&igu=1`);
+        }
+    };
+
+    const handleNavigate = (e: React.FormEvent) => {
+        e.preventDefault();
+        let url = inputValue;
+        if (!url.startsWith('http') && !url.includes('.')) {
+            url = `https://www.google.com/search?q=${encodeURIComponent(url)}&igu=1`;
+        } else if (!url.startsWith('http')) {
+            url = `https://${url}`;
+        }
+        
+        setIframeUrl(url);
+        setTabs(prev => prev.map(t => t.active ? { ...t, url: inputValue, title: inputValue } : t));
     };
 
     return (
-        <AppContainer>
-            <div className="flex items-center gap-2 p-2 bg-white dark:bg-[#1e293b] border-b border-slate-200 dark:border-slate-700">
-                <button onClick={handleRefresh} className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition">
-                    <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-                </button>
-                <div className="flex-1 flex items-center bg-slate-100 dark:bg-slate-800 rounded-full px-3 py-1.5">
-                    <Globe size={14} className="text-slate-400 mr-2" />
+        <div className="h-full flex flex-col bg-[#dfe1e5] dark:bg-[#202124]">
+            {/* Tabs Bar */}
+            <div className="flex items-end px-2 pt-2 bg-[#dee1e6] dark:bg-[#202124] space-x-1 overflow-x-auto no-scrollbar">
+                {tabs.map(tab => (
+                    <div 
+                        key={tab.id}
+                        onClick={() => switchTab(tab.id)}
+                        className={`group relative flex items-center min-w-[120px] max-w-[200px] h-9 px-3 rounded-t-lg text-xs cursor-pointer select-none transition-colors ${tab.active ? 'bg-white dark:bg-[#323639] text-slate-800 dark:text-white shadow-sm z-10' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-[#292a2d]'}`}
+                    >
+                        <span className="flex-1 truncate mr-2">{tab.title || 'Nouvel onglet'}</span>
+                        <button onClick={(e) => closeTab(e, tab.id)} className="p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={10}/></button>
+                    </div>
+                ))}
+                <button onClick={addTab} className="p-1.5 ml-1 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400"><Plus size={16}/></button>
+            </div>
+
+            {/* Navigation Bar */}
+            <div className="bg-white dark:bg-[#323639] p-2 flex items-center gap-2 border-b border-slate-200 dark:border-[#323639] shadow-sm z-20">
+                <div className="flex gap-1">
+                    <button className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400 disabled:opacity-50"><ChevronLeft size={16}/></button>
+                    <button className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400 disabled:opacity-50"><ChevronRight size={16}/></button>
+                    <button onClick={() => setIframeUrl(iframeUrl)} className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400"><RefreshCw size={14}/></button>
+                </div>
+                <form onSubmit={handleNavigate} className="flex-1 flex items-center bg-[#f1f3f4] dark:bg-[#202124] rounded-full px-3 py-1.5 border border-transparent focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-[#202124] focus-within:shadow-md transition-all">
+                    {inputValue.startsWith('https') ? <Lock size={12} className="text-green-600 mr-2"/> : <Globe size={12} className="text-slate-400 mr-2"/>}
                     <input 
                         type="text" 
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                        className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm text-slate-800 dark:text-white"
+                        onFocus={(e) => e.target.select()}
                     />
+                    <button className="ml-2 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500"><Star size={14}/></button>
+                </form>
+                <div className="flex gap-2 text-slate-600 dark:text-slate-400">
+                    <button className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600"><Download size={16}/></button>
+                    <button className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-600"><MoreVertical size={16}/></button>
                 </div>
             </div>
-            
-            <div className="flex-1 overflow-y-auto bg-[#f8fafc] dark:bg-[#0f172a] p-8">
-                <div className="max-w-3xl mx-auto space-y-8">
-                    <div className="text-center mb-12">
-                        <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Hybrid Search</h1>
-                        <div className="relative max-w-lg mx-auto">
-                            <input type="text" placeholder="Rechercher sur le web..." className="w-full pl-10 pr-4 py-3 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#1e293b] shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition dark:text-white" />
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                        </div>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-white dark:bg-[#1e293b] p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                            <h3 className="font-bold text-lg mb-2 dark:text-white">Actualités Tech</h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">Le nouveau processeur quantique bat tous les records de vitesse...</p>
-                        </div>
-                        <div className="bg-white dark:bg-[#1e293b] p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                            <h3 className="font-bold text-lg mb-2 dark:text-white">Météo</h3>
-                            <div className="flex items-center gap-4 dark:text-white">
-                                <span className="text-3xl font-light">24°C</span>
-                                <span className="text-sm text-slate-500 dark:text-slate-400">Ensoleillé</span>
-                            </div>
-                        </div>
-                        <div className="bg-white dark:bg-[#1e293b] p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm md:col-span-2">
-                            <h3 className="font-bold text-lg mb-2 dark:text-white">Bourse</h3>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-green-500">NSDQ +1.2%</span>
-                                <span className="text-red-500">CAC40 -0.4%</span>
-                                <span className="text-green-500">BTC +5.0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* Content Area */}
+            <div className="flex-1 bg-white relative">
+                <iframe 
+                    src={iframeUrl} 
+                    className="w-full h-full border-none"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    title="Browser"
+                />
             </div>
-        </AppContainer>
+        </div>
     );
 };
 
 // --- TERMINAL APP (Updated) ---
-// Note: Keeping Terminal somewhat "technical" but cleaning up the style
 export const TerminalApp = ({ onClose, onOpenApp }: { onClose: () => void, onOpenApp: (id: string) => void }) => {
   const [history, setHistory] = useState<string[]>([
     "Microsoft Windows [version 10.0.19045.3693]",
@@ -1285,3 +1321,576 @@ export const SettingsApp: React.FC<SettingsProps> = ({ currentTheme, onThemeChan
         </div>
     )
 }
+
+// --- UTILITIES ---
+
+export const EverythingApp = () => {
+    const [search, setSearch] = useState('');
+    // Mock Data
+    const files = Array.from({length: 50}, (_, i) => ({
+        id: i,
+        name: `Document_Projet_${i}.docx`,
+        path: `C:\\Users\\Admin\\Documents\\Projets`,
+        size: `${(Math.random() * 5).toFixed(2)} MB`,
+        date: '2025-06-15 14:30'
+    }));
+
+    const filtered = files.filter(f => f.name.toLowerCase().includes(search.toLowerCase()));
+
+    return (
+        <AppContainer>
+            <div className="p-2 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1e293b]">
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded border border-slate-300 dark:border-slate-600">
+                    <Search size={16} className="text-slate-500"/>
+                    <input autoFocus type="text" placeholder="Rechercher un fichier..." className="w-full bg-transparent outline-none text-sm" value={search} onChange={e => setSearch(e.target.value)} />
+                </div>
+            </div>
+            <div className="flex-1 overflow-auto">
+                <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0">
+                        <tr>
+                            <th className="p-2 font-semibold">Nom</th>
+                            <th className="p-2 font-semibold">Chemin</th>
+                            <th className="p-2 font-semibold w-24">Taille</th>
+                            <th className="p-2 font-semibold w-32">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {filtered.map(f => (
+                            <tr key={f.id} className="hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer">
+                                <td className="p-2 truncate max-w-[200px]">{f.name}</td>
+                                <td className="p-2 text-slate-500 truncate max-w-[200px]">{f.path}</td>
+                                <td className="p-2 text-right">{f.size}</td>
+                                <td className="p-2 text-slate-500">{f.date}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="p-2 text-xs text-slate-400 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
+                    {filtered.length} objets
+                </div>
+            </div>
+        </AppContainer>
+    )
+}
+
+export const PowerToysApp = () => (
+    <AppContainer className="bg-[#f3f3f3] dark:bg-[#202020]">
+        <div className="flex h-full">
+            <div className="w-60 bg-white dark:bg-[#2d2d2d] border-r border-slate-200 dark:border-[#1f1f1f] flex flex-col p-2 space-y-1">
+                {['Général', 'FancyZones', 'Image Resizer', 'Keyboard Manager', 'PowerRename', 'Color Picker', 'Run'].map((item, i) => (
+                    <button key={item} className={`text-left px-4 py-2 rounded text-sm ${i===0 ? 'bg-blue-500 text-white' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#383838]'}`}>{item}</button>
+                ))}
+            </div>
+            <div className="flex-1 p-8 overflow-y-auto">
+                <h1 className="text-2xl font-semibold mb-6">Général</h1>
+                <div className="bg-white dark:bg-[#2d2d2d] p-6 rounded-lg shadow-sm border border-slate-200 dark:border-[#1f1f1f] space-y-6">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="font-semibold">Version</div>
+                            <div className="text-sm text-slate-500">v0.80.1</div>
+                        </div>
+                        <button className="px-4 py-2 bg-slate-200 dark:bg-[#383838] rounded hover:bg-slate-300 text-sm font-medium">Rechercher des mises à jour</button>
+                    </div>
+                    <div className="h-px bg-slate-200 dark:bg-[#383838]"></div>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="font-semibold">Mode Administrateur</div>
+                            <div className="text-sm text-slate-500">Toujours exécuter en tant qu'administrateur</div>
+                        </div>
+                        <div className="w-10 h-5 bg-blue-500 rounded-full relative cursor-pointer"><div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div></div>
+                    </div>
+                    <div className="h-px bg-slate-200 dark:bg-[#383838]"></div>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="font-semibold">Apparence</div>
+                            <div className="text-sm text-slate-500">Thème de l'application</div>
+                        </div>
+                        <select className="bg-slate-100 dark:bg-[#383838] border border-slate-300 dark:border-[#444] rounded p-1 text-sm"><option>Système par défaut</option><option>Clair</option><option>Sombre</option></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const SevenZipApp = () => {
+    const files = [
+        { n: '..', s: '', t: 'Dossier' },
+        { n: 'Photos_Vacances.zip', s: '1.2 GB', t: 'Archive ZIP' },
+        { n: 'Backup_Work.7z', s: '450 MB', t: 'Archive 7Z' },
+        { n: 'Project_Assets.tar.gz', s: '85 MB', t: 'Archive GZIP' },
+        { n: 'Setup.exe', s: '12 MB', t: 'Application' }
+    ];
+    return (
+        <AppContainer>
+            <div className="flex gap-1 p-1 bg-slate-100 dark:bg-[#333] border-b border-slate-300 dark:border-slate-600">
+                <button className="flex flex-col items-center p-2 hover:bg-blue-100 dark:hover:bg-slate-600 rounded w-16 group"><Plus size={24} className="text-blue-600 dark:text-blue-400"/><span className="text-[10px]">Ajouter</span></button>
+                <button className="flex flex-col items-center p-2 hover:bg-blue-100 dark:hover:bg-slate-600 rounded w-16 group"><Upload size={24} className="text-green-600 dark:text-green-400"/><span className="text-[10px]">Extraire</span></button>
+                <button className="flex flex-col items-center p-2 hover:bg-blue-100 dark:hover:bg-slate-600 rounded w-16 group"><Eye size={24} className="text-slate-600 dark:text-slate-300"/><span className="text-[10px]">Test</span></button>
+            </div>
+            <div className="p-1 bg-white dark:bg-[#1e1e1e] border-b border-slate-300 dark:border-slate-600 text-xs">
+                C:\Users\User\Downloads
+            </div>
+            <div className="flex-1 bg-white dark:bg-[#1e1e1e]">
+                <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-100 dark:bg-[#333]">
+                        <tr><th className="p-1 border-r border-slate-300 dark:border-slate-600">Nom</th><th className="p-1 border-r border-slate-300 dark:border-slate-600">Taille</th><th className="p-1">Type</th></tr>
+                    </thead>
+                    <tbody>
+                        {files.map((f, i) => (
+                            <tr key={i} className="hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer">
+                                <td className="p-1 flex items-center gap-2"><Archive size={14} className="text-yellow-500"/> {f.n}</td>
+                                <td className="p-1 text-right">{f.s}</td>
+                                <td className="p-1">{f.t}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </AppContainer>
+    );
+}
+
+export const WizTreeApp = () => (
+    <AppContainer>
+        <Toolbar title="Analyseur de stockage">
+            <button className="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs font-bold">Analyser</button>
+        </Toolbar>
+        <div className="flex-1 flex flex-col p-2">
+            <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded overflow-hidden mb-2 relative">
+                <div className="h-full bg-blue-500 w-[75%]"></div>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold mix-blend-difference text-white">C: (NTFS) - 75% Utilisé</span>
+            </div>
+            <div className="flex-1 border border-slate-300 dark:border-slate-600 relative overflow-hidden bg-[#111]">
+                {/* Simulated Treemap */}
+                <div className="absolute top-0 left-0 w-[60%] h-full bg-blue-600 border border-black p-2 text-white font-bold text-xs truncate">Windows (System)</div>
+                <div className="absolute top-0 right-0 w-[40%] h-[50%] bg-green-600 border border-black p-2 text-white font-bold text-xs truncate">Users (Documents)</div>
+                <div className="absolute bottom-0 right-0 w-[40%] h-[50%] flex flex-wrap">
+                    <div className="w-1/2 h-full bg-red-600 border border-black p-2 text-white font-bold text-xs truncate">Program Files</div>
+                    <div className="w-1/2 h-full bg-purple-600 border border-black p-2 text-white font-bold text-xs truncate">Pagefile.sys</div>
+                </div>
+            </div>
+            <div className="mt-2 text-xs flex gap-4">
+                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-600"></div> Système</div>
+                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-green-600"></div> Utilisateur</div>
+                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-red-600"></div> Apps</div>
+                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-purple-600"></div> Cache</div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const RevoApp = () => {
+    const [cleaning, setCleaning] = useState(false);
+    return (
+        <AppContainer>
+            <div className="bg-[#f0f0f0] dark:bg-[#333] p-2 flex gap-2 border-b border-slate-300">
+                <button className="flex flex-col items-center px-4 py-1 hover:bg-white/50 rounded"><Trash2 size={24} className="text-red-500"/><span className="text-xs">Désinstaller</span></button>
+                <button className="flex flex-col items-center px-4 py-1 hover:bg-white/50 rounded"><RefreshCw size={24} className="text-blue-500"/><span className="text-xs">Rafraîchir</span></button>
+            </div>
+            <div className="flex-1 bg-white dark:bg-[#1e1e1e] overflow-y-auto p-4">
+                <div className="grid grid-cols-4 gap-4">
+                    {['Adobe Photoshop', 'Google Chrome', 'Microsoft Office', 'Spotify', 'Steam', 'Discord', 'Node.js', 'VLC Media Player'].map((app, i) => (
+                        <div key={i} className="flex flex-col items-center p-4 border border-transparent hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-slate-700 rounded cursor-pointer transition">
+                            <div className="w-12 h-12 bg-slate-200 dark:bg-slate-600 rounded-lg mb-2"></div>
+                            <span className="text-sm font-medium text-center">{app}</span>
+                            <span className="text-xs text-slate-500">250 MB</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            {cleaning && <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold">Nettoyage en cours...</div>}
+        </AppContainer>
+    )
+}
+
+export const BleachBitApp = () => {
+    const [progress, setProgress] = useState(0);
+    const runClean = () => {
+        setProgress(1);
+        const t = setInterval(() => setProgress(p => p >= 100 ? 100 : p + 5), 100);
+        setTimeout(() => clearInterval(t), 2500);
+    }
+    return (
+        <AppContainer>
+            <div className="flex h-full">
+                <div className="w-64 bg-slate-100 dark:bg-[#252525] border-r border-slate-300 p-2 overflow-y-auto">
+                    <h3 className="font-bold text-xs uppercase mb-2 text-slate-500">Système</h3>
+                    {['Cache', 'Presse-papiers', 'Fichiers temporaires', 'Corbeille', 'Journaux'].map(i => (
+                        <label key={i} className="flex items-center gap-2 text-sm p-1 hover:bg-slate-200 dark:hover:bg-[#333] cursor-pointer">
+                            <input type="checkbox" defaultChecked /> {i}
+                        </label>
+                    ))}
+                    <h3 className="font-bold text-xs uppercase mt-4 mb-2 text-slate-500">Navigateurs</h3>
+                    {['Cookies', 'Historique', 'Mots de passe', 'Cache DOM'].map(i => (
+                        <label key={i} className="flex items-center gap-2 text-sm p-1 hover:bg-slate-200 dark:hover:bg-[#333] cursor-pointer">
+                            <input type="checkbox" /> {i}
+                        </label>
+                    ))}
+                </div>
+                <div className="flex-1 flex flex-col p-4 bg-white dark:bg-[#1e1e1e]">
+                    <div className="flex gap-2 mb-4">
+                        <button className="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 rounded shadow-sm text-sm font-bold flex items-center gap-2"><Search size={16}/> Aperçu</button>
+                        <button onClick={runClean} className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded shadow-sm text-sm font-bold flex items-center gap-2"><Trash2 size={16}/> Nettoyer</button>
+                    </div>
+                    <div className="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-black p-2 font-mono text-xs overflow-y-auto">
+                        {progress > 0 && <div>Démarrage du nettoyage...<br/>Suppression de C:\Windows\Temp\ (120 Mo)...<br/>Vidage de la corbeille...</div>}
+                        {progress === 100 && <div className="text-green-600 font-bold mt-2">Nettoyage terminé ! 1.4 Go libérés.</div>}
+                    </div>
+                    {progress > 0 && <div className="mt-2 w-full h-4 bg-slate-200 rounded-full overflow-hidden"><div className="h-full bg-green-500 transition-all" style={{width: `${progress}%`}}></div></div>}
+                </div>
+            </div>
+        </AppContainer>
+    );
+}
+
+// --- MULTIMEDIA ---
+
+export const VLCApp = () => (
+    <AppContainer className="bg-[#141414] text-slate-200">
+        <div className="flex-1 flex items-center justify-center bg-black relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+                <Play size={64} className="text-orange-500 opacity-50 border-4 border-orange-500 rounded-full p-4"/>
+            </div>
+            <div className="absolute bottom-4 text-orange-500 font-bold text-xl drop-shadow-md">VLC Media Player</div>
+        </div>
+        <div className="bg-[#2b2b2b] p-2">
+            {/* Timeline */}
+            <div className="w-full h-1 bg-gray-600 mb-2 relative group cursor-pointer">
+                <div className="h-full bg-orange-500 w-1/3 relative">
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                </div>
+            </div>
+            {/* Controls */}
+            <div className="flex justify-between items-center px-4">
+                <div className="flex gap-4">
+                    <button className="hover:text-white"><Play size={20} fill="currentColor" /></button>
+                    <button className="hover:text-white"><Pause size={20} /></button>
+                    <button className="hover:text-white"><Square size={16} fill="currentColor" /></button>
+                </div>
+                <div className="flex gap-4 items-center">
+                    <span className="text-xs font-mono">00:12:43 / 01:45:20</span>
+                    <Volume2 size={18} />
+                    <div className="w-20 h-1 bg-gray-600 rounded"><div className="w-3/4 h-full bg-orange-500"></div></div>
+                </div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const HandBrakeApp = () => (
+    <AppContainer className="bg-[#f0f0f0] dark:bg-[#2d2d2d]">
+        <div className="p-2 border-b border-slate-300 flex gap-2">
+            <button className="px-3 py-1 border bg-white dark:bg-[#383838] rounded text-sm flex items-center gap-2"><File size={14}/> Ouvrir Source</button>
+            <button className="px-3 py-1 bg-green-600 text-white rounded text-sm font-bold flex items-center gap-2"><Play size={14}/> Démarrer l'encodage</button>
+        </div>
+        <div className="p-4 space-y-4">
+            <div className="bg-white dark:bg-[#383838] p-4 rounded shadow-sm">
+                <h3 className="font-bold text-sm mb-2">Source: VID_20250615.mp4</h3>
+                <div className="flex gap-4 text-xs text-slate-500">
+                    <span>1920x1080</span>
+                    <span>30 FPS</span>
+                    <span>H.264</span>
+                </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white dark:bg-[#383838] p-4 rounded shadow-sm">
+                    <h4 className="font-bold text-xs mb-2 uppercase">Préglages</h4>
+                    <select className="w-full border p-1 rounded text-sm"><option>Fast 1080p30</option><option>HQ 1080p30 Surround</option><option>Vimeo YouTube HQ 1080p60</option></select>
+                </div>
+                <div className="bg-white dark:bg-[#383838] p-4 rounded shadow-sm">
+                    <h4 className="font-bold text-xs mb-2 uppercase">Format</h4>
+                    <label className="flex items-center gap-2 text-sm"><input type="radio" name="format" defaultChecked/> MP4</label>
+                    <label className="flex items-center gap-2 text-sm"><input type="radio" name="format"/> MKV</label>
+                    <label className="flex items-center gap-2 text-sm"><input type="radio" name="format"/> WebM</label>
+                </div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const AudacityApp = () => (
+    <AppContainer className="bg-[#e0e0e0] dark:bg-[#222]">
+        <div className="bg-[#dcdcdc] dark:bg-[#333] p-1 border-b border-slate-400 flex gap-1">
+            {/* Transport */}
+            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-[#444] rounded">
+                <button className="p-1 rounded hover:bg-green-200"><Pause size={16} className="text-green-700 fill-current"/></button>
+                <button className="p-1 rounded hover:bg-green-200"><Play size={16} className="text-green-700 fill-current"/></button>
+                <button className="p-1 rounded hover:bg-red-200"><Square size={16} className="text-yellow-600 fill-current"/></button>
+                <button className="p-1 rounded hover:bg-red-200"><Circle size={16} className="text-red-600 fill-current"/></button>
+            </div>
+            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-[#444] rounded">
+                <button><Scissors size={16}/></button>
+                <button><FileText size={16}/></button>
+            </div>
+        </div>
+        <div className="flex-1 bg-[#333] p-2 overflow-hidden flex flex-col gap-2 relative">
+            {/* Waveform Mockup */}
+            <div className="h-32 bg-[#222] border border-slate-600 relative">
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#333] border-r border-slate-600 text-[10px] text-white p-1">L</div>
+                <div className="absolute left-8 right-0 top-0 bottom-0 flex items-center">
+                    <div className="w-full h-16 bg-blue-500 opacity-50" style={{clipPath: 'polygon(0% 50%, 10% 20%, 20% 80%, 30% 30%, 40% 70%, 50% 40%, 60% 60%, 70% 20%, 80% 80%, 90% 40%, 100% 50%, 100% 100%, 0% 100%)'}}></div>
+                </div>
+            </div>
+            <div className="h-32 bg-[#222] border border-slate-600 relative">
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-[#333] border-r border-slate-600 text-[10px] text-white p-1">R</div>
+                <div className="absolute left-8 right-0 top-0 bottom-0 flex items-center">
+                    <div className="w-full h-16 bg-blue-500 opacity-50" style={{clipPath: 'polygon(0% 50%, 15% 30%, 25% 70%, 35% 20%, 45% 80%, 55% 30%, 65% 70%, 75% 10%, 85% 90%, 95% 40%, 100% 50%, 100% 100%, 0% 100%)'}}></div>
+                </div>
+            </div>
+            <div className="absolute top-0 bottom-0 left-1/4 w-0.5 bg-yellow-500 z-10"></div>
+        </div>
+    </AppContainer>
+);
+
+export const GimpApp = () => (
+    <AppContainer className="bg-[#444] text-slate-200 flex">
+        {/* Tools */}
+        <div className="w-12 bg-[#555] border-r border-[#333] flex flex-col gap-1 p-1">
+            <button className="p-1 hover:bg-[#666] bg-[#777] rounded"><Move size={16}/></button>
+            <button className="p-1 hover:bg-[#666] rounded"><Square size={16} className="border border-white"/></button>
+            <button className="p-1 hover:bg-[#666] rounded"><PenTool size={16}/></button>
+            <button className="p-1 hover:bg-[#666] rounded"><Type size={16}/></button>
+            <button className="p-1 hover:bg-[#666] rounded"><Palette size={16}/></button>
+        </div>
+        {/* Main Canvas Area */}
+        <div className="flex-1 bg-[#333] p-8 flex items-center justify-center overflow-hidden">
+            <div className="bg-white w-[400px] h-[300px] shadow-lg relative">
+                <div className="absolute inset-0 flex items-center justify-center text-black opacity-20 font-bold text-4xl rotate-12 select-none">CANVAS</div>
+            </div>
+        </div>
+        {/* Layers / Properties */}
+        <div className="w-48 bg-[#555] border-l border-[#333] flex flex-col">
+            <div className="p-2 bg-[#666] text-xs font-bold">Couches</div>
+            <div className="flex-1 p-2 space-y-1">
+                <div className="bg-[#777] p-1 text-xs flex items-center gap-2"><Eye size={12}/> Arrière-plan</div>
+                <div className="p-1 text-xs flex items-center gap-2"><Eye size={12}/> Calque 1</div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const DaVinciApp = () => (
+    <AppContainer className="bg-[#181818] text-gray-400 font-sans">
+        <div className="h-full flex flex-col">
+            {/* Viewer */}
+            <div className="flex-1 flex border-b border-black">
+                <div className="w-1/2 border-r border-black bg-black relative flex items-center justify-center">
+                    <div className="text-xs">Source Clip</div>
+                </div>
+                <div className="w-1/2 bg-black relative flex items-center justify-center">
+                    <Play size={48} className="text-white opacity-20"/>
+                    <div className="absolute top-2 right-2 text-white text-xs">01:00:23:12</div>
+                </div>
+            </div>
+            {/* Timeline Tools */}
+            <div className="h-8 bg-[#222] flex items-center px-2 gap-4 border-b border-black text-xs">
+                <button className="text-white">Selection Mode</button>
+                <button>Blade Edit</button>
+                <div className="flex-1"></div>
+                <button>Snapping</button>
+            </div>
+            {/* Timeline */}
+            <div className="h-48 bg-[#222] relative overflow-hidden">
+                <div className="h-6 bg-[#333] border-b border-black flex text-[10px] items-center px-2 text-gray-500">
+                    <span>00:00</span><span className="ml-10">00:15</span><span className="ml-10">00:30</span>
+                </div>
+                <div className="p-1 space-y-1">
+                    <div className="h-8 bg-blue-900/50 border border-blue-800 relative w-[80%] ml-4 rounded-sm"><span className="text-[9px] text-white p-1">Video 1</span></div>
+                    <div className="h-8 bg-green-900/50 border border-green-800 relative w-[60%] ml-4 rounded-sm"><span className="text-[9px] text-white p-1">Audio 1</span></div>
+                </div>
+                <div className="absolute top-0 bottom-0 left-1/3 w-px bg-red-500 z-10"></div>
+            </div>
+            {/* Pages Tab */}
+            <div className="h-10 bg-[#111] flex justify-center items-center gap-8 border-t border-black text-xs uppercase font-bold text-gray-500">
+                <div className="hover:text-white cursor-pointer">Media</div>
+                <div className="hover:text-white cursor-pointer">Cut</div>
+                <div className="text-white border-b-2 border-red-600 pb-2 cursor-pointer">Edit</div>
+                <div className="hover:text-white cursor-pointer">Fusion</div>
+                <div className="hover:text-white cursor-pointer">Color</div>
+                <div className="hover:text-white cursor-pointer">Fairlight</div>
+                <div className="hover:text-white cursor-pointer">Deliver</div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+// --- PRODUCTIVITY ---
+
+export const ObsidianApp = () => (
+    <AppContainer className="bg-[#202020] text-[#dcddde] flex">
+        <div className="w-64 border-r border-[#333] flex flex-col">
+            <div className="p-3 font-bold border-b border-[#333] flex justify-between">
+                <span>Mon Coffre</span>
+                <Feather size={16}/>
+            </div>
+            <div className="flex-1 p-2 space-y-1 text-sm">
+                <div className="p-1 hover:bg-[#333] rounded cursor-pointer text-[#999]">Dossier Journal</div>
+                <div className="p-1 hover:bg-[#333] rounded cursor-pointer text-white bg-[#333]">Idées Projet.md</div>
+                <div className="p-1 hover:bg-[#333] rounded cursor-pointer text-[#999]">Liste de courses.md</div>
+                <div className="p-1 hover:bg-[#333] rounded cursor-pointer text-[#999]">To-Do.md</div>
+            </div>
+        </div>
+        <div className="flex-1 flex flex-col">
+            <div className="h-10 border-b border-[#333] flex items-center px-4 text-sm text-[#999]">
+                Idées Projet.md
+            </div>
+            <div className="flex-1 p-8 font-mono">
+                <h1 className="text-3xl font-bold mb-4"># Idées Projet</h1>
+                <p className="mb-4">Voici quelques idées pour le futur OS :</p>
+                <ul className="list-disc pl-5 space-y-2">
+                    <li>- [x] Créer une interface web</li>
+                    <li>- [ ] Intégrer des apps locales</li>
+                    <li>- [ ] Ajouter le mode sombre</li>
+                </ul>
+                <div className="mt-8 text-purple-400">[[Lien vers un autre fichier]]</div>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const LibreOfficeApp = () => (
+    <AppContainer className="bg-[#f0f0f0]">
+        {/* Menu Bar */}
+        <div className="bg-white border-b border-slate-300 px-2 py-1 text-xs flex gap-4">
+            <span>Fichier</span><span>Édition</span><span>Affichage</span><span>Insertion</span><span>Format</span>
+        </div>
+        {/* Toolbar */}
+        <div className="bg-[#f0f0f0] border-b border-slate-300 p-1 flex gap-2">
+            <button className="p-1 hover:bg-slate-300 rounded"><Save size={16}/></button>
+            <button className="p-1 hover:bg-slate-300 rounded"><Type size={16}/></button>
+            <div className="w-px h-6 bg-slate-300 mx-1"></div>
+            <select className="text-sm border p-0.5"><option>Arial</option></select>
+            <select className="text-sm border p-0.5"><option>12</option></select>
+            <button className="font-bold px-2">G</button>
+            <button className="italic px-2">I</button>
+            <button className="underline px-2">S</button>
+        </div>
+        {/* Document */}
+        <div className="flex-1 bg-[#dcdcdc] p-8 overflow-y-auto flex justify-center">
+            <div className="w-[210mm] min-h-[297mm] bg-white shadow-lg p-[25mm] text-black text-sm">
+                <h1 className="text-2xl font-bold mb-4 text-black">Document Sans Titre 1</h1>
+                <p>Ceci est une simulation de traitement de texte fonctionnant en local.</p>
+                <p>Vous pouvez taper ici, mais rien ne sera réellement sauvegardé sur le serveur distant.</p>
+                <br/>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+        </div>
+    </AppContainer>
+);
+
+export const FluxApp = () => {
+    const [temp, setTemp] = useState(3400);
+    return (
+        <AppContainer className="bg-white dark:bg-[#222]">
+            <div className="flex-1 p-8 flex flex-col items-center justify-center">
+                <div className="w-64 h-64 rounded-full bg-gradient-to-b from-orange-300 to-blue-300 relative overflow-hidden shadow-inner mb-8">
+                    {/* Simulated curve */}
+                    <div className="absolute inset-0 bg-white/20" style={{clipPath: 'polygon(0 100%, 100% 100%, 100% 40%, 0 60%)'}}></div>
+                </div>
+                <h2 className="text-xl font-bold mb-4">{temp}K - Halogène</h2>
+                <input 
+                    type="range" 
+                    min="1900" 
+                    max="6500" 
+                    value={temp} 
+                    onChange={e => setTemp(Number(e.target.value))}
+                    className="w-64"
+                />
+                <p className="mt-4 text-sm text-center text-slate-500">Ajuste la couleur de votre écran pour s'adapter à l'heure de la journée.</p>
+            </div>
+        </AppContainer>
+    )
+}
+
+// --- SECURITY & NETWORK ---
+
+export const KeePassApp = () => {
+    const [locked, setLocked] = useState(true);
+    if (locked) {
+        return (
+            <AppContainer className="flex items-center justify-center bg-slate-100 dark:bg-[#2d2d2d]">
+                <div className="w-80 p-6 bg-white dark:bg-[#333] rounded shadow-lg border border-slate-300 dark:border-black">
+                    <div className="flex justify-center mb-4"><Key size={48} className="text-green-600"/></div>
+                    <h2 className="text-center font-bold mb-4">Déverrouiller la base</h2>
+                    <input type="password" placeholder="Mot de passe maître" className="w-full border p-2 rounded mb-4 text-sm"/>
+                    <button onClick={() => setLocked(false)} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Ouvrir</button>
+                </div>
+            </AppContainer>
+        )
+    }
+    return (
+        <AppContainer>
+            <Toolbar title="KeePassXC - Base.kdbx">
+                <button className="p-1 hover:bg-slate-200 rounded"><Save size={16}/></button>
+                <button onClick={() => setLocked(true)} className="p-1 hover:bg-slate-200 rounded"><Lock size={16}/></button>
+            </Toolbar>
+            <div className="flex h-full">
+                <div className="w-48 bg-slate-50 dark:bg-[#333] border-r border-slate-300 p-2 text-sm">
+                    <div className="font-bold mb-2">Groupes</div>
+                    <div className="pl-2">Général</div>
+                    <div className="pl-2">Windows</div>
+                    <div className="pl-2 bg-blue-100 dark:bg-blue-900 rounded">Internet</div>
+                    <div className="pl-2">Email</div>
+                </div>
+                <div className="flex-1 bg-white dark:bg-[#1e1e1e]">
+                    <table className="w-full text-left text-sm">
+                        <thead className="bg-slate-100 dark:bg-[#2d2d2d] border-b border-slate-300">
+                            <tr><th className="p-2">Titre</th><th className="p-2">Nom d'utilisateur</th><th className="p-2">URL</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-b border-slate-100 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800">
+                                <td className="p-2 flex items-center gap-2"><Globe size={14}/> Google</td>
+                                <td className="p-2">mon.email@gmail.com</td>
+                                <td className="p-2">google.com</td>
+                            </tr>
+                            <tr className="border-b border-slate-100 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800">
+                                <td className="p-2 flex items-center gap-2"><Globe size={14}/> GitHub</td>
+                                <td className="p-2">dev_master</td>
+                                <td className="p-2">github.com</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </AppContainer>
+    )
+}
+
+export const GlassWireApp = () => (
+    <AppContainer className="bg-[#1a2c4e] text-white">
+        <div className="flex h-12 items-center px-4 bg-[#14223b] gap-6 font-bold text-sm">
+            <span className="text-blue-400 border-b-2 border-blue-400 pb-3 mt-3">GRAPHIQUE</span>
+            <span className="opacity-50">PARE-FEU</span>
+            <span className="opacity-50">USAGE</span>
+            <span className="opacity-50">ALERTES</span>
+        </div>
+        <div className="flex-1 p-4 flex flex-col relative overflow-hidden">
+            <div className="absolute top-4 right-4 text-2xl font-light">12.4 MB</div>
+            <div className="flex-1 flex items-end gap-1">
+                {/* Simulated Traffic Graph */}
+                {Array.from({length: 50}).map((_, i) => {
+                    const h = Math.random() * 80 + 10;
+                    return (
+                        <div key={i} className="flex-1 bg-yellow-400/80 hover:bg-yellow-300 transition-all relative group" style={{height: `${h}%`}}>
+                            <div className="absolute inset-0 bg-gradient-to-t from-orange-600 to-transparent"></div>
+                        </div>
+                    )
+                })}
+            </div>
+            <div className="h-32 mt-4 bg-[#14223b] rounded-lg p-2 flex gap-2 overflow-x-auto">
+                <div className="w-32 bg-[#1a2c4e] p-2 rounded flex flex-col items-center">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full mb-1"></div>
+                    <div className="text-xs truncate w-full text-center">Chrome.exe</div>
+                    <div className="text-[10px] text-gray-400">450 MB</div>
+                </div>
+                <div className="w-32 bg-[#1a2c4e] p-2 rounded flex flex-col items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full mb-1"></div>
+                    <div className="text-xs truncate w-full text-center">System</div>
+                    <div className="text-[10px] text-gray-400">120 MB</div>
+                </div>
+            </div>
+        </div>
+    </AppContainer>
+);

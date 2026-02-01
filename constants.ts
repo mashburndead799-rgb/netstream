@@ -45,7 +45,7 @@ export const FEATURED_MOVIE: Movie = {
 // Five Nights at Freddy's 2 (Standalone constant for specific use if needed, also in list)
 export const FNAF_MOVIE: Movie = {
   "id": "2",
-  "title": "Five Nights at Freddy's 2",
+  "title": "Five Nights at Freddy's 2 ",
   "description": "Mike Schmidt pense en avoir fini avec ses cauchemars, mais le passé ne meurt jamais vraiment. La pizzeria rouvre ses portes avec de nouveaux animatroniques 'Toy' dotés de technologies de reconnaissance faciale avancées.",
   "tagline": "La fête recommence... et le cauchemar aussi.",
   "category": "Film",
@@ -256,7 +256,7 @@ export const BLOCKBUSTER_COLLECTION: Movie[] = [
   // --- Animation & Autres ---
   { "id": "129", "title": "28 Jours plus tard", "description": "Un virus ravage la Grande-Bretagne.", "category": "Film", "genre": ["Horreur", "Thriller"], "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKzo2Cw6CzPKExUXwShtM-71eNpWzbnXySjA&s", "backdrop": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKzo2Cw6CzPKExUXwShtM-71eNpWzbnXySjA&s", "video_url": "https://sharecloudy.com/iframe/0LXq15XDVZ", "year": 2002, "duration": "1h 53min", "rating": "4.5", "maturityRating": "16+", "featured": false },
   { "id": "130", "title": "28 Semaines plus tard", "description": "Le virus réapparaît.", "category": "Film", "genre": ["Horreur", "Thriller"], "thumbnail": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/4c34b46e-142f-4819-a0d9-a6cc23c19f42/compose?aspectRatio=1.78&format=webp&width=1200", "backdrop": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/4c34b46e-142f-4819-a0d9-a6cc23c19f42/compose?aspectRatio=1.78&format=webp&width=1200", "video_url": "https://sharecloudy.com/iframe/IwRL81OAfo", "year": 2007, "duration": "1h 40min", "rating": "4.3", "maturityRating": "16+", "featured": false },
-  { "id": "131", "title": "28 Ans plus tard", "description": "La saga continue.", "category": "Film", "genre": ["Horreur", "Thriller"], "thumbnail": "https://cdn.sortiraparis.com/images/80/69688/1133337-28-ans-plus-tard-l-epopee-horrifique-de-danny-boyle.jpg", "backdrop": "https://cdn.sortiraparis.com/images/80/69688/1133337-28-ans-plus-tard-l-epopee-horrifique-de-danny-boyle.jpg", "video_url": "https://sharecloudy.com/iframe/plUi3WOe6X", "year": 2025, "duration": "2h 00min", "rating": "4.6", "maturityRating": "16+", "featured": false },
+  { "id": "131", "title": "28 Ans plus tard", "description": "La saga continue.", "category": "Film", "genre": ["Horreur", "Thriller"], "thumbnail": "https://cdn.sortiraparis.com/images/80/69688/1133337-28-ans-plus-tard-l-epopee-horrifique-de-danny-boyle.jpg", "backdrop": "https://cdn.sortiraparis.com/images/80/69688/1133337-28-ans-plus-tard-l-epopee-horrifique-de-danny-boyle.jpg", "video_url": "https://sharecloudy.com/iframe/plUi3WOe6X", "year": 2025,"duration": "2h 00min", "rating": "4.6", "maturityRating": "16+", "featured": false },
 
   { "id": "132", "title": "Vice-versa", "description": "Dans la tête d'une petite fille.", "category": "Film", "genre": ["Animation", "Famille"], "thumbnail": "https://proxymedia.woopic.com/api/v1/images/331%2FVICEVERSAXXW0100355_BAN1_2424_NEWTV_HD.jpg", "backdrop": "https://proxymedia.woopic.com/api/v1/images/331%2FVICEVERSAXXW0100355_BAN1_2424_NEWTV_HD.jpg", "video_url": "https://bramtiv.com/iframe/iZJYDcLoM7", "year": 2015, "duration": "1h 35min", "rating": "4.8", "maturityRating": "Tous publics", "featured": false },
   { "id": "133", "title": "Vice-versa 2", "description": "L'adolescence et de nouvelles émotions.", "category": "Film", "genre": ["Animation", "Famille"], "thumbnail": "https://digitalcine.fr/wp-content/uploads/2024/10/vice-versa-2_image-une-fiche-film.jpg", "backdrop": "https://digitalcine.fr/wp-content/uploads/2024/10/vice-versa-2_image-une-fiche-film.jpg", "video_url": "https://bramtiv.com/iframe/e9Su9XpsRc", "year": 2024, "duration": "1h 36min", "rating": "4.7", "maturityRating": "Tous publics", "featured": false },
@@ -1395,6 +1395,14 @@ export const TV_SERIES_COLLECTION: Movie[] = [
             "duration": "60m",
             "thumbnail": "https://m.media-amazon.com/images/S/pv-target-images/9511dfbeea04d1e32fd283be70d640747bb9d824f84823669311d7372fbf6f02._BR-6_AC_SX720_FMwebp_.png",
             "video_url": "https://vidzy.org/embed-bzp2zhu5nnc4.html"
+          },
+          {
+            "id": "s2s2e6",
+            "title": "6. Des cœurs seront brisés",
+            "description": "Une bataille entre les Cerveaux et les Muscles se tient à 30 m du sol et dans un puzzle à taille humaine pour déterminer le plus fort ainsi que le plus intelligent de Beast City. Les mensonges et les déceptions fusent alors que les joueurs choisissent trois cœurs à briser, ce qui les éliminera du jeu ! Personne n'est à l'abri à Beast City... La pièce aux 10 millions de dollars, survivra-t-elle ?",
+            "duration": "62m",
+            "thumbnail": "https://m.media-amazon.com/images/S/pv-target-images/53446d9bfc3e744abd1cce1d02330f0ea98a4b5a95fe4796cef990a18ffbdcaf._BR-6_AC_SX720_FMwebp_.jpg",
+            "video_url": "https://vidzy.org/embed-bywc3cw0922y.html"
           }
         ]
       }
@@ -1974,7 +1982,7 @@ export const TV_SERIES_COLLECTION: Movie[] = [
     "year": 2020,
     "duration": "3 Saisons",
     "rating": "3.9",
-    "maturityRating	": "16+",
+    "maturityRating": "16+",
     "featured": true,
     "seasons": [
       {

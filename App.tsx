@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Monitor, Globe, Settings, Wifi, Battery, FolderOpen, Power, FileText, Film, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Box, Grid, AlertTriangle, Eye, Hexagon, Music, Camera, Image, Map, Palette, ShieldAlert, Info, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Circle, Radio, LayoutGrid, Search, Bell } from 'lucide-react';
+import { Terminal, Monitor, Globe, Settings, Wifi, Battery, FolderOpen, Power, FileText, Film, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Box, Grid, AlertTriangle, Eye, Hexagon, Music, Camera, Image, Map, Palette, ShieldAlert, Info, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Circle, Radio, LayoutGrid, Search, Bell, Archive, Scissors, Key, BarChart, PenTool, Feather, Disc, LayoutDashboard, Trash2 } from 'lucide-react';
 import NetStreamApp from './components/NetStreamApp';
 import Window from './components/Window';
-import { TerminalApp, DataPadApp, SettingsApp, BrowserApp, CalculatorApp, PaintApp, SnakeApp, CameraApp, CryptoApp, TaskManagerApp, WeatherApp, NotesApp, MusicApp, MapsApp, CalendarApp, MailApp, ChatApp, GalleryApp, AntivirusApp, ShopApp, NewsApp, HelpApp, CodeApp, EyeApp, TicTacToeApp, StopwatchApp, RadioApp, TranslatorApp, SynthApp, ConverterApp, MinesweeperApp, HackerTyperApp, BreathingApp, ColorPickerApp, WorldClockApp, DrumPadApp, SecretsApp, SysGraphApp } from './components/OsApps';
+import { TerminalApp, DataPadApp, SettingsApp, BrowserApp, CalculatorApp, PaintApp, SnakeApp, CameraApp, CryptoApp, TaskManagerApp, WeatherApp, NotesApp, MusicApp, MapsApp, CalendarApp, MailApp, ChatApp, GalleryApp, AntivirusApp, ShopApp, NewsApp, HelpApp, CodeApp, EyeApp, TicTacToeApp, StopwatchApp, RadioApp, TranslatorApp, SynthApp, ConverterApp, MinesweeperApp, HackerTyperApp, BreathingApp, ColorPickerApp, WorldClockApp, DrumPadApp, SecretsApp, SysGraphApp, EverythingApp, PowerToysApp, SevenZipApp, WizTreeApp, RevoApp, BleachBitApp, VLCApp, HandBrakeApp, AudacityApp, GimpApp, DaVinciApp, ObsidianApp, LibreOfficeApp, FluxApp, KeePassApp, GlassWireApp } from './components/OsApps';
 import { CineDashApp } from './components/CineDashApp';
 
-type AppId = 'netstream' | 'terminal' | 'settings' | 'browser' | 'datapad' | 'cinedash' | 'calculator' | 'paint' | 'snake' | 'camera' | 'crypto' | 'taskmanager' | 'weather' | 'notes' | 'music' | 'maps' | 'calendar' | 'mail' | 'chat' | 'gallery' | 'antivirus' | 'shop' | 'news' | 'help' | 'code' | 'eye' | 'tictactoe' | 'stopwatch' | 'radio' | 'translator' | 'synth' | 'converter' | 'minesweeper' | 'hackertyper' | 'breathing' | 'colorpicker' | 'worldclock' | 'drumpad' | 'secrets' | 'sysgraph';
+type AppId = 'netstream' | 'terminal' | 'settings' | 'browser' | 'datapad' | 'cinedash' | 'calculator' | 'paint' | 'snake' | 'camera' | 'crypto' | 'taskmanager' | 'weather' | 'notes' | 'music' | 'maps' | 'calendar' | 'mail' | 'chat' | 'gallery' | 'antivirus' | 'shop' | 'news' | 'help' | 'code' | 'eye' | 'tictactoe' | 'stopwatch' | 'radio' | 'translator' | 'synth' | 'converter' | 'minesweeper' | 'hackertyper' | 'breathing' | 'colorpicker' | 'worldclock' | 'drumpad' | 'secrets' | 'sysgraph' | 'everything' | 'powertoys' | '7zip' | 'wiztree' | 'revo' | 'bleachbit' | 'vlc' | 'handbrake' | 'audacity' | 'gimp' | 'davinci' | 'obsidian' | 'libreoffice' | 'flux' | 'keepass' | 'glasswire';
 
 interface WindowState {
   id: AppId;
@@ -16,6 +16,20 @@ interface WindowState {
   icon: React.ReactNode;
   component: React.ReactNode;
 }
+
+const DesktopIcon = ({ icon, label, onDoubleClick }: { icon: React.ReactNode, label: string, onDoubleClick: () => void }) => (
+    <div 
+        className="group flex flex-col items-center gap-2 cursor-pointer w-24 opacity-80 hover:opacity-100 transition-all hover:-translate-y-1 p-2 rounded-lg hover:bg-white/5"
+        onDoubleClick={onDoubleClick}
+    >
+        <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10 group-hover:bg-white/20 transition-colors shadow-lg shadow-black/20">
+            {icon}
+        </div>
+        <span className="text-xs text-white font-medium drop-shadow-md bg-black/40 px-2 py-0.5 rounded-full truncate max-w-full text-center border border-white/5">
+            {label}
+        </span>
+    </div>
+);
 
 const App = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -29,9 +43,34 @@ const App = () => {
     { id: 'netstream', title: 'NetStream', isOpen: false, isMinimized: false, zIndex: 1, icon: <Monitor size={18} />, component: <NetStreamApp /> },
     { id: 'terminal', title: 'Terminal', isOpen: false, isMinimized: false, zIndex: 2, icon: <Terminal size={18} />, component: <TerminalApp onClose={() => closeWindow('terminal')} onOpenApp={(id) => openWindow(id as AppId)} /> },
     { id: 'cinedash', title: 'CineDash', isOpen: false, isMinimized: false, zIndex: 0, icon: <Film size={18} />, component: <CineDashApp /> },
-    { id: 'browser', title: 'Navigateur Web', isOpen: false, isMinimized: false, zIndex: 0, icon: <Globe size={18} />, component: <BrowserApp /> },
+    { id: 'browser', title: 'Chrome', isOpen: false, isMinimized: false, zIndex: 0, icon: <Globe size={18} />, component: <BrowserApp /> },
     { id: 'datapad', title: 'Bloc-notes', isOpen: false, isMinimized: false, zIndex: 0, icon: <FileText size={18} />, component: <DataPadApp /> },
     { id: 'settings', title: 'Paramètres', isOpen: false, isMinimized: false, zIndex: 0, icon: <Settings size={18} />, component: <SettingsApp currentTheme={theme} onThemeChange={setTheme} onWallpaperChange={setWallpaper} /> },
+    
+    // Utilitaires & Système
+    { id: 'everything', title: 'Everything', isOpen: false, isMinimized: false, zIndex: 0, icon: <Search size={18} />, component: <EverythingApp /> },
+    { id: 'powertoys', title: 'PowerToys', isOpen: false, isMinimized: false, zIndex: 0, icon: <Box size={18} />, component: <PowerToysApp /> },
+    { id: '7zip', title: '7-Zip', isOpen: false, isMinimized: false, zIndex: 0, icon: <Archive size={18} />, component: <SevenZipApp /> },
+    { id: 'wiztree', title: 'WizTree', isOpen: false, isMinimized: false, zIndex: 0, icon: <LayoutDashboard size={18} />, component: <WizTreeApp /> },
+    { id: 'revo', title: 'Revo Uninstaller', isOpen: false, isMinimized: false, zIndex: 0, icon: <Trash2 size={18} />, component: <RevoApp /> },
+    { id: 'bleachbit', title: 'BleachBit', isOpen: false, isMinimized: false, zIndex: 0, icon: <Trash2 size={18} />, component: <BleachBitApp /> },
+
+    // Multimédia & Création
+    { id: 'vlc', title: 'VLC Media Player', isOpen: false, isMinimized: false, zIndex: 0, icon: <AlertTriangle size={18} className="text-orange-500"/>, component: <VLCApp /> },
+    { id: 'handbrake', title: 'HandBrake', isOpen: false, isMinimized: false, zIndex: 0, icon: <Disc size={18} />, component: <HandBrakeApp /> },
+    { id: 'audacity', title: 'Audacity', isOpen: false, isMinimized: false, zIndex: 0, icon: <Activity size={18} />, component: <AudacityApp /> },
+    { id: 'gimp', title: 'GIMP', isOpen: false, isMinimized: false, zIndex: 0, icon: <Palette size={18} />, component: <GimpApp /> },
+    { id: 'davinci', title: 'DaVinci Resolve', isOpen: false, isMinimized: false, zIndex: 0, icon: <Film size={18} />, component: <DaVinciApp /> },
+
+    // Productivité
+    { id: 'obsidian', title: 'Obsidian', isOpen: false, isMinimized: false, zIndex: 0, icon: <Feather size={18} />, component: <ObsidianApp /> },
+    { id: 'libreoffice', title: 'LibreOffice', isOpen: false, isMinimized: false, zIndex: 0, icon: <FileText size={18} />, component: <LibreOfficeApp /> },
+    { id: 'flux', title: 'f.lux', isOpen: false, isMinimized: false, zIndex: 0, icon: <Eye size={18} />, component: <FluxApp /> },
+
+    // Sécurité
+    { id: 'keepass', title: 'KeePassXC', isOpen: false, isMinimized: false, zIndex: 0, icon: <Key size={18} />, component: <KeePassApp /> },
+    { id: 'glasswire', title: 'GlassWire', isOpen: false, isMinimized: false, zIndex: 0, icon: <BarChart size={18} />, component: <GlassWireApp /> },
+
     // Existing Apps
     { id: 'calculator', title: 'Calculatrice', isOpen: false, isMinimized: false, zIndex: 0, icon: <Calculator size={18} />, component: <CalculatorApp /> },
     { id: 'paint', title: 'Studio', isOpen: false, isMinimized: false, zIndex: 0, icon: <Palette size={18} />, component: <PaintApp /> },
@@ -53,7 +92,6 @@ const App = () => {
     { id: 'help', title: 'Aide', isOpen: false, isMinimized: false, zIndex: 0, icon: <Info size={18} />, component: <HelpApp /> },
     { id: 'code', title: 'Code', isOpen: false, isMinimized: false, zIndex: 0, icon: <Hexagon size={18} />, component: <CodeApp /> },
     { id: 'eye', title: 'Caméras', isOpen: false, isMinimized: false, zIndex: 0, icon: <Eye size={18} />, component: <EyeApp /> },
-    // New Apps (14)
     { id: 'tictactoe', title: 'Morpion', isOpen: false, isMinimized: false, zIndex: 0, icon: <Square size={18} />, component: <TicTacToeApp /> },
     { id: 'stopwatch', title: 'Chronomètre', isOpen: false, isMinimized: false, zIndex: 0, icon: <Watch size={18} />, component: <StopwatchApp /> },
     { id: 'radio', title: 'Radio FM', isOpen: false, isMinimized: false, zIndex: 0, icon: <Radio size={18} />, component: <RadioApp /> },
@@ -170,7 +208,7 @@ const App = () => {
         {/* Desktop Icons - Grid Layout (Clean) */}
         <div className="absolute top-4 left-4 grid grid-flow-col grid-rows-[repeat(auto-fill,100px)] gap-6 z-0 content-start">
             {windows.slice(0, 14).map(win => (
-                <DesktopIcon key={win.id} icon={React.cloneElement(win.icon as React.ReactElement, { size: 32 })} label={win.title} onDoubleClick={() => openWindow(win.id)} />
+                <DesktopIcon key={win.id} icon={React.cloneElement(win.icon as React.ReactElement<any>, { size: 32 })} label={win.title} onDoubleClick={() => openWindow(win.id)} />
             ))}
             
             <div className="group flex flex-col items-center gap-2 cursor-pointer w-24 opacity-80 hover:opacity-100 transition-all hover:-translate-y-1" onDoubleClick={() => alert("Dossier Sécurisé")}>
@@ -217,7 +255,7 @@ const App = () => {
                 </div>
 
                 <div className="grid grid-cols-6 gap-4 mb-8">
-                    {windows.slice(0, 12).map(win => (
+                    {windows.slice(0, 18).map(win => (
                         <button key={win.id} onClick={() => openWindow(win.id)} className="flex flex-col items-center gap-2 group p-2 hover:bg-white/5 rounded-xl transition-colors">
                             <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-inner">
                                 {win.icon}
@@ -245,80 +283,41 @@ const App = () => {
         </div>
 
         {/* Dock / Taskbar */}
-        <div className="h-16 px-4 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-2xl flex items-center gap-3 shadow-2xl relative">
+        <div className="h-16 px-4 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-2xl flex items-center gap-2 shadow-2xl relative z-50">
             
-            {/* Start Button */}
             <button 
                 id="start-btn"
-                onClick={() => setStartMenuOpen(!startMenuOpen)}
-                className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 hover:bg-white/10 ${startMenuOpen ? 'bg-blue-600 shadow-lg shadow-blue-500/30' : 'text-blue-400'}`}
+                onClick={() => setStartMenuOpen(!startMenuOpen)} 
+                className="p-2 rounded-xl hover:bg-white/10 transition-colors mr-2 group relative"
             >
-                <LayoutGrid size={24} className={startMenuOpen ? "text-white" : ""} />
+                <LayoutGrid size={24} className={`text-blue-400 transition-transform duration-300 ${startMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <div className="w-px h-8 bg-white/10 mx-1"></div>
 
-            {/* Pinned / Active Apps */}
-            <div className="flex items-center gap-2">
-                {windows.slice(0, 6).map(win => (
-                    <div key={win.id} className="relative group">
-                        <button
-                            onClick={() => toggleWindow(win.id as AppId)}
-                            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 hover:-translate-y-1 
-                                ${win.isOpen 
-                                    ? (activeWindowId === win.id 
-                                        ? 'bg-white/10 text-white shadow-lg border border-white/10' 
-                                        : 'bg-transparent text-gray-400 hover:bg-white/5') 
-                                    : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
-                                }`}
-                        >
-                            {win.icon}
-                        </button>
-                        {win.isOpen && (
-                            <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${activeWindowId === win.id ? 'bg-blue-500 w-3 transition-all' : 'bg-gray-500'}`}></div>
-                        )}
-                        {/* Tooltip */}
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10">
-                            {win.title}
-                        </div>
+            {/* Pinned / Open Apps */}
+            {windows.filter(w => w.zIndex > -1).slice(0, 8).map(win => (
+                <div key={win.id} className="relative group">
+                    <button 
+                        onClick={() => toggleWindow(win.id)}
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 ${win.isOpen ? 'bg-white/10 shadow-inner' : 'hover:bg-white/5'} ${activeWindowId === win.id ? 'ring-1 ring-blue-400/50' : ''}`}
+                    >
+                        {win.icon}
+                    </button>
+                    {win.isOpen && (
+                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full"></div>
+                    )}
+                    {/* Tooltip */}
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-xs text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">
+                        {win.title}
                     </div>
-                ))}
-            </div>
-
-            <div className="w-px h-8 bg-white/10 mx-1"></div>
-
-            {/* System Tray */}
-            <div className="flex items-center gap-3 pl-2">
-                <div className="flex flex-col items-end text-right mr-2 cursor-default">
-                    <span className="text-xs font-bold text-white">{currentTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
-                    <span className="text-[10px] text-gray-400">{currentTime.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</span>
                 </div>
-                <button className="p-2 hover:bg-white/10 rounded-full text-white relative">
-                    <Bell size={18} />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-slate-900"></span>
-                </button>
-            </div>
+            ))}
 
         </div>
       </div>
     </div>
   );
 };
-
-const DesktopIcon = ({ icon, label, onDoubleClick }: any) => (
-    <div className="group flex flex-col items-center gap-2 cursor-pointer w-24 p-2 rounded-lg hover:bg-white/5 transition-colors" onDoubleClick={onDoubleClick}>
-        <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white shadow-lg border border-white/10 group-hover:scale-105 group-hover:bg-blue-500/20 group-hover:border-blue-400/50 transition-all duration-300">
-            {icon}
-        </div>
-        <span className="text-xs text-white font-medium text-center drop-shadow-md line-clamp-2 px-1 rounded bg-black/0 group-hover:bg-black/40 transition-colors">{label}</span>
-    </div>
-);
-
-const StartMenuItem = ({ label, icon, onClick }: any) => (
-    <button onClick={onClick} className="w-full text-left px-3 py-2 hover:bg-white/10 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition-colors group rounded">
-        <span className="group-hover:text-blue-400 transition-colors">{icon}</span>
-        <span className="font-medium tracking-wide truncate">{label}</span>
-    </button>
-);
 
 export default App;
