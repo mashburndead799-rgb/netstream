@@ -219,8 +219,8 @@ const App = () => {
       {/* --- DESKTOP AREA --- */}
       <div className="flex-1 relative overflow-hidden p-4 md:p-6 z-10">
         
-        {/* Desktop Icons - Flex Layout for Wrapping */}
-        <div className="absolute inset-4 z-0 flex flex-col flex-wrap content-start gap-4 pointer-events-none">
+        {/* Desktop Icons - Flex Layout for Wrapping (Row Major) */}
+        <div className="absolute inset-4 z-0 flex flex-row flex-wrap content-start items-start gap-4 pointer-events-none">
             {windows.slice(0, 56).map(win => (
                 <DesktopIcon key={win.id} icon={React.cloneElement(win.icon as React.ReactElement<any>, { size: 28 })} label={win.title} onDoubleClick={() => openWindow(win.id)} />
             ))}
