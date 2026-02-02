@@ -26,9 +26,15 @@ interface WindowState {
   component: React.ReactNode;
 }
 
-const DesktopIcon = ({ icon, label, onDoubleClick }: { icon: React.ReactNode, label: string, onDoubleClick: () => void }) => (
+interface DesktopIconProps {
+  icon: React.ReactNode;
+  label: string;
+  onDoubleClick: () => void;
+}
+
+const DesktopIcon: React.FC<DesktopIconProps> = ({ icon, label, onDoubleClick }) => (
     <div 
-        className="group flex flex-col items-center gap-2 cursor-pointer w-[100px] h-[110px] opacity-90 hover:opacity-100 transition-all hover:bg-white/10 p-2 rounded-xl mb-2"
+        className="group flex flex-col items-center gap-2 cursor-pointer w-[100px] h-[110px] opacity-90 hover:opacity-100 transition-all hover:bg-white/10 p-2 rounded-xl mb-2 pointer-events-auto"
         onDoubleClick={onDoubleClick}
     >
         <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10 group-hover:bg-white/20 transition-colors shadow-lg shadow-black/20 group-hover:scale-105 transform duration-200">
@@ -211,15 +217,15 @@ const App = () => {
       </div>
 
       {/* --- DESKTOP AREA --- */}
-      <div className="flex-1 relative overflow-hidden p-6 z-10">
+      <div className="flex-1 relative overflow-hidden p-4 md:p-6 z-10">
         
-        {/* Desktop Icons - Flex Wrap for "New Line" Behavior */}
-        <div className="absolute inset-4 z-0 flex flex-wrap content-start gap-4 overflow-y-auto pb-20 items-start">
+        {/* Desktop Icons - Flex Layout for Wrapping */}
+        <div className="absolute inset-4 z-0 flex flex-col flex-wrap content-start gap-4 pointer-events-none">
             {windows.slice(0, 56).map(win => (
                 <DesktopIcon key={win.id} icon={React.cloneElement(win.icon as React.ReactElement<any>, { size: 28 })} label={win.title} onDoubleClick={() => openWindow(win.id)} />
             ))}
             
-            <div className="group flex flex-col items-center gap-2 cursor-pointer w-[100px] h-[110px] opacity-90 hover:opacity-100 transition-all hover:bg-white/10 p-2 rounded-xl" onDoubleClick={() => alert("Dossier Sécurisé")}>
+            <div className="group flex flex-col items-center gap-2 cursor-pointer w-[100px] h-[110px] opacity-90 hover:opacity-100 transition-all hover:bg-white/10 p-2 rounded-xl pointer-events-auto" onDoubleClick={() => alert("Dossier Sécurisé")}>
                 <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-blue-400/30 group-hover:bg-blue-500/30 transition-colors shadow-lg">
                     <FolderOpen className="text-blue-400" size={28} />
                 </div>

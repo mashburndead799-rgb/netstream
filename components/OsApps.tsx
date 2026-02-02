@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Save, RefreshCw, Globe, ShieldAlert, Cpu, Palette, Type, Trash2, Wifi, Battery, HardDrive, User, Lock, Monitor, Volume2, Command, Search, Radio, Bluetooth, Mic, Bell, Info, Layers, Download, Power, Database, Terminal as TerminalIcon, Camera, Music, Image, Map, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Crosshair, Box, Grid, AlertTriangle, Eye, Hexagon, Play, Pause, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Move, Maximize, Circle, ChevronDown, Upload, Archive, Scissors, Key, BarChart, PenTool, Feather, Disc, FileText, ChevronLeft, ChevronRight, Star, MoreVertical, Plus, File, Sun, Video, FolderOpen, Film } from 'lucide-react';
+import { Save, RefreshCw, Globe, ShieldAlert, Cpu, Palette, Type, Trash2, Wifi, Battery, HardDrive, User, Lock, Monitor, Volume2, Command, Search, Radio, Bluetooth, Mic, Bell, Info, Layers, Download, Power, Database, Terminal as TerminalIcon, Camera, Music, Image, Map, Calculator, Calendar, Mail, MessageSquare, DollarSign, Activity, Crosshair, Box, Grid, AlertTriangle, Eye, Hexagon, Play, Pause, Square, Watch, Music4, Binary, Shuffle, FileWarning, TrendingUp, Move, Maximize, Circle, ChevronDown, Upload, Archive, Scissors, Key, BarChart, PenTool, Feather, Disc, FileText, ChevronLeft, ChevronRight, Star, MoreVertical, Plus, File, Sun, Video, FolderOpen, Film, Minus as MinusIcon } from 'lucide-react';
 
 // --- SHARED UTILS ---
 const AppContainer = ({ children, className = "" }: any) => (
@@ -437,7 +437,7 @@ export const MapsApp = () => (
 
             <div className="absolute bottom-6 right-6 flex flex-col gap-2">
                 <button className="bg-white p-2 rounded shadow hover:bg-slate-50"><Plus size={20}/></button>
-                <button className="bg-white p-2 rounded shadow hover:bg-slate-50"><Minus size={20}/></button>
+                <button className="bg-white p-2 rounded shadow hover:bg-slate-50"><MinusIcon size={20}/></button>
             </div>
         </div>
     </AppContainer>
